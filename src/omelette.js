@@ -275,6 +275,9 @@
       }
 
       setupShellInitFile(initFile = this.getDefaultShellInitFile()) {
+        const doc = fs.readFileSync(initFile, "utf-8");
+        const completionBlock = this.getCompletionBlock();
+        if (doc.includes(completionBlock)) return;
         var completionPath, programFolder;
         // @shell might be undefined if an `initFile` was passed
         if (this.shell == null) {
@@ -290,8 +293,7 @@
           fs.writeFileSync(completionPath, this.generateCompletionCode());
         }
         // For every shell, write completion block to the init file
-        fs.appendFileSync(initFile, this.getCompletionBlock());
-        return process.exit();
+        fs.appendFileSync(initFile, completionBlock);
       }
 
       cleanupShellInitFile(initFile = this.getDefaultShellInitFile()) {
